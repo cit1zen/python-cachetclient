@@ -352,3 +352,66 @@ class Subscribers(Cachet):
         check_required_args(required_args, kwargs)
 
         return self._post('subscribers', data=kwargs)
+
+
+class IncidentUpdates(Cachet):
+    """
+    incidents/<incident ID>/updates API endpoint
+
+    This endpoint is available since Cachet 2.4.
+    """
+    def __init__(self, **kwargs):
+        super(IncidentUpdates, self).__init__(**kwargs)
+
+    @api_token_required
+    def delete(self, incident_id, update_id):
+        """
+        https://docs.cachethq.io/v1.0/reference#incidentsincidentupdatesupdate
+        """
+        return self._delete('incidents/%s/updates/%s' %
+                            incident_id,
+                            update_id)
+
+    def get(self, incident_id, update_id, **kwargs):
+        """
+        https://docs.cachethq.io/v1.0/reference#incidentsidupdates
+        https://docs.cachethq.io/v1.0/reference#incidentsidupdatesid
+        """
+        if update_id is not None:
+            return self._get('incidents/%s/updates/%s' %
+                             incident_id,
+                             update_id,
+                             data=kwargs)
+        elif 'params' in kwargs:
+            data = dict(kwargs)
+            params = data.pop('params')
+            return self._get('incidents/%s/updates' %
+                             incident_id,
+                             data=kwargs,
+                             params=params)
+        else:
+            return self._get('incidents/%s/updates' %
+                             incident_id,
+                             data=kwargs)
+
+    @api_token_required
+    def post(self, incident_id, **kwargs):
+        """
+        https://docs.cachethq.io/v1.0/reference#incidentsincidentupdates
+        """
+        required_args = ['message', 'status']
+        check_required_args(required_args, kwargs)
+
+        return self._post('incidents/%s/updates' %
+                          incident_id,
+                          data=kwargs)
+
+    @api_token_required
+    def put(self, incident_id, update_id, **kwargs):
+        """
+        https://docs.cachethq.io/v1.0/reference#incidentsincidentupdatesupdate-1
+        """
+        return self._put('incidents/%s/updates/%s' %
+                         incident_id,
+                         update_id,
+                         data=kwargs)
